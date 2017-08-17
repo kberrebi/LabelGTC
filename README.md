@@ -1,2 +1,2 @@
-Version modifiée de superGeneTreeMaker (sauf les paramètres) 
+Version modifiée de superGeneTreeMaker
 Erreur de segmentation pour l'instant
