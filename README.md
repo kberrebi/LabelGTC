@@ -1,1 +1,2 @@
-Version non modifiée de superGeneTreeMaker (sauf les paramètres) (compile et s'exécute sans erreur apparemment)
+Version modifiée de superGeneTreeMaker (sauf les paramètres) 
+Erreur de segmentation pour l'instant
