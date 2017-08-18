@@ -107,7 +107,6 @@ string DoSubtreeCorrection(string gcontent, string scontent, bool preserveDupSpe
 
 string DoSuperGeneTree(string gcontent, string scontent, bool preserveDupSpec, string clades_to_preserve, string treated_trees, string outputmode)
 {
-    cout << "AAAAAAAAAAAAAAAAA" << "\n";
     Node* speciesTree = NewickLex::ParseNewickString(scontent, true);
     /*
     cout << gcontent << "\n";
@@ -169,10 +168,8 @@ string DoSuperGeneTree(string gcontent, string scontent, bool preserveDupSpec, s
       trees.push_back(tree);
     }
 
-    cout << "AAAAAAAAAAAAAAAAA" << "\n";
     SuperGeneTreeMaker sgtMaker;
     pair<Node*, int> res = sgtMaker.GetSuperGeneTreeMinDL(geneTrees, clades, trees, lca_mappings, speciesTree, preserveDupSpec, true);
-    cout << "BBBBBBBBBBBBBBBBBB" << "\n";
     Node* superTree = res.first;
     int cost = res.second;
 

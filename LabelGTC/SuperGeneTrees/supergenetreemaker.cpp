@@ -23,20 +23,17 @@ pair<Node*, int> SuperGeneTreeMaker::GetSuperGeneTreeMinDL(vector<Node *> &trees
 
     if (isFirstCall)
     {
-      cout << treated_trees.size() << "\n";
-      cout << clades_to_preserve.size() << "\n";
 
-      for (int k=0; k < trees.size(); k++){
 
-        for (int j=0; j < treated_trees.size(); j++){
-          cout<< trees[k]->Equals(treated_trees[j]) << "\n";
+    /*  for (int k=0; k < trees.size(); k++){
+
+        for (int j=0; j < clades_to_preserve.size(); j++){
+          cout<< trees[k]->Equals(clades_to_preserve[j]) << "\n";
         }
-        cout << NewickLex::ToNewickString(treated_trees[k]) << "\n";
-      }
-
-      for (int k=0; k < clades_to_preserve.size(); k++){
         cout << NewickLex::ToNewickString(clades_to_preserve[k]) << "\n";
       }
+
+    */
 
         GeneSpeciesTreeUtil::Instance()->LabelInternalNodesUniquely(trees);
         this->intersectionInfo = TreeLabelIntersectionInfo();
@@ -95,27 +92,17 @@ pair<Node*, int> SuperGeneTreeMaker::GetSuperGeneTreeMinDL(vector<Node *> &trees
     bool dostop = true;
     string leaflabel = "";
 
-    int cpt = 0;
-    int cpt1 = 0;
+    int cld_ctp = 0;
 
     //the real recursion stop is when there is a single gene
     for (int i = 0; i < trees.size(); i++)
     {
-      for (int j = 0; j < treated_trees.size(); j++){
-        if (trees[i]->Equals(treated_trees[j]))
-          cpt++;
-      }
-      if (cpt == trees.size())
-      {
-        break;
-      }
       for (int j = 0; j < clades_to_preserve.size(); j++){
-        if (trees[i]->Equals(clades_to_preserve[j]))
-          cpt1++;
-      }
-      if (cpt1 == trees.size())
-      {
-        break;
+        if (trees[i]->Equals(clades_to_preserve[j])){
+
+          cld_ctp++;
+          break; // we do not expect more than one match
+        }
       }
         if (!trees[i]->IsLeaf())
         {
@@ -133,6 +120,12 @@ pair<Node*, int> SuperGeneTreeMaker::GetSuperGeneTreeMinDL(vector<Node *> &trees
             }
 
         }
+    }
+
+    // all trees are clade to preserve
+    if (cld_ctp == trees.size())
+    {
+        dostop = true; // stop, while discarding previous infos
     }
 
     if (dostop)
@@ -187,14 +180,14 @@ pair<Node*, int> SuperGeneTreeMaker::GetSuperGeneTreeMinDL(vector<Node *> &trees
             Node* tree = trees[c];
             unordered_map<Node*, Node*> lca_mapping = lca_mappings[c];
 
-            bool in_list = false;
-            bool in_list1 = false;
-            int i = 0;
-            int j = 0;
+            bool in_treated = false;
+            bool in_preserved = false;
+            int preserve_cpt = 0;
+            int treated_cpt = 0;
 
 
             //checking if it is not a tree already treated
-            while ((in_list == false) && (j < treated_trees.size()))
+            /*while ((in_list == false) && (j < treated_trees.size()))
             {
               cout<< "toto" << endl;
               if (tree->Equals(treated_trees[j])){
@@ -212,20 +205,17 @@ pair<Node*, int> SuperGeneTreeMaker::GetSuperGeneTreeMinDL(vector<Node *> &trees
 
 
             //checking if it is not a clade we want to preserve
-            while ((in_list1 == false) && (i < clades_to_preserve.size()))
-
+            while ((in_preserved == false) && (preserve_cpt < clades_to_preserve.size()))
             {
-              cout<< "tata" << endl;
-              if (tree->Equals(clades_to_preserve[i])){
-                in_list1 = true;
+              if (tree->Equals(clades_to_preserve[preserve_cpt])){
+                in_preserved = true;
               }
-              i++;
+              preserve_cpt++;
             }
 
             //we can't split a leaf or a clade to preserve
-            if ((((tree->IsLeaf() || in_list1) && (counters[c] == 1 || counters[c] == 3))) || in_list)
+            if (((tree->IsLeaf() || in_preserved) && (counters[c] == 1 || counters[c] == 3))) //|| in_list)
             {
-              cout<< "tutu" << endl;
                 isConfigFine = false;
                 break;  //evil break out of for loop
             }
